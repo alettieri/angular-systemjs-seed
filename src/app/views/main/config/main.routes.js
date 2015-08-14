@@ -1,5 +1,6 @@
 import angular from 'angular';
-import main from 'main/main';
+import main from 'app/views/main/main.module';
+import mainContentTemplate from '../partials/main.content'
 
 main.config(mainConfig);
 
@@ -10,10 +11,12 @@ function mainConfig($stateProvider) {
         url: '/',
         views: {
             content: {
-                templateUrl: ''
+                template: `<div>
+                hello world
+                </div>`
             }
         }
     });
 }
 
-module.exports = main;
+export default main;

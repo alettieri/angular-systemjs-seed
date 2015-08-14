@@ -1,4 +1,3 @@
 import angular from 'angular';
 
-module.exports = angular.module('sampleApp.main', []);
-
+export default angular.module('sampleApp.main', []);
