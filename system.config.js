@@ -3,6 +3,7 @@ System.config({
     defaultJSExtensions: true,
     transpiler: "babel",
     babelOptions: {
+        moduleIds: false,
         "optional": [
             "runtime"
         ]

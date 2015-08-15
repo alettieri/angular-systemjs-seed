@@ -19,12 +19,22 @@ var uglify = require('gulp-uglify');
 var routeBundler = require('systemjs-route-bundler');
 var concatFile = require('gulp-concat');
 
+
 var compilerOptions = {
     modules: 'system',
     moduleIds: false,
+    // http://babeljs.io/docs/advanced/external-helpers/
     externalHelpers: true,
-    comments: true,
-    compact: false,
+    comments: false,
+    compact: true,
+    // https://babeljs.io/docs/usage/options/#options - check env section
+    // Allow for environmental selective builds
+    env: {
+      development: {
+        compact: false,
+        comments: true
+      }
+    }
 };
 
 var path = {
@@ -100,10 +110,11 @@ gulp.task('inline-systemjs', function () {
     return gulp.src([
         './node_modules/es6-module-loader/dist/es6-module-loader.js',
         './node_modules/systemjs/dist/system.js',
+        './node_modules/babel-core/external-helpers.js',
         './system.config.js',
         'dist/app/app.js'
     ])
-        //.pipe(uglify())
+        .pipe(uglify())
         .pipe(concatFile('app/app.js'))
         .pipe(gulp.dest(path.output));
 });
@@ -168,11 +179,18 @@ gulp.task('watch', ['serve'], function () {
 
 gulp.task('build', ['compile-production'], function () {
 
+   // Our applicaiton module routes to handle
+   // Could also be in a config that dynamically generates the paths
+   var routes = [
+     'app/views/main/main.module'
+   ];
+
     var config = {
         dest: 'dist',
         main: 'app/app.js',
         destMain: 'dist/app',
         bundleThreshold: 0.6,
+        routes: routes,
         systemConfig: './system.config.js',
         sourceMaps: false,
         minify: true,
