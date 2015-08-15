@@ -6,7 +6,7 @@ var app = angular.module('sampleApp', [main.name]);
 
 angular.element(document).ready(function () {
     angular.bootstrap(document.body, [app.name], {
-        //strictDi: true
+        strictDi: true
     });
 });
 
