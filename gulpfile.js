@@ -8,22 +8,14 @@ var runSequence = require('run-sequence');
 var vinylPaths = require('vinyl-paths');
 var del = require('del');
 var stylish = require('jshint-stylish');
-var assign = Object.assign || require('object.assign');
 var sourcemaps = require("gulp-sourcemaps");
 var ngHtml2Js = require("gulp-ng-html2js");
 var htmlMin = require('gulp-minify-html');
-var RSVP = require('rsvp');
-var less = require('gulp-less');
 var karma = require('karma').server;
 var insert = require('gulp-insert');
 var ngAnnotate = require('gulp-ng-annotate');
-var fs = require('fs');
-var replace = require('gulp-replace-task');
-var lessPluginCleanCSS = require("less-plugin-clean-css");
-var cleancss = new lessPluginCleanCSS({advanced: true});
 var cache = require('gulp-cached');
 var uglify = require('gulp-uglify');
-var adjustUrls = require('gulp-css-url-adjuster');
 var routeBundler = require('systemjs-route-bundler');
 var concatFile = require('gulp-concat');
 
@@ -38,10 +30,7 @@ var compilerOptions = {
 var path = {
     source: 'src/**/*.js',
     html: '**/*.html',
-    json: '**/*.html',
     templates: 'src/**/*.html',
-    less: ['src/**/*.less', '!src/assets/**/*.less'],
-    themes: ['src/assets/dark.less', 'src/assets/light.less'],
     themesOutput: 'dist/assets/',
     output: 'dist/',
     outputCss: 'dist/**/*.css'
@@ -82,63 +71,12 @@ gulp.task('html', function () {
         .pipe(browserSync.reload({stream: true}));
 });
 
-gulp.task('less', function () {
-    return gulp.src(path.less)
-        .pipe(cache('less'))
-        .pipe(plumber())
-        .pipe(changed(path.output, {extension: '.css'}))
-        .pipe(sourcemaps.init())
-        .pipe(less({
-            plugins: [cleancss]
-        }))
-        .pipe(sourcemaps.write("."))
-        .pipe(gulp.dest(path.output))
-        .pipe(browserSync.reload({stream: true}));
-});
-
-gulp.task('move', function () {
-    return gulp.src([
-        './src/**/*.json',
-        './src/**/*.svg',
-        './src/**/*.woff',
-        './src/**/*.ttf',
-        './src/**/*.png',
-        './src/**/*.gif',
-        './src/**/*.ico',
-        './src/**/*.jpg',
-        './src/**/*.eot'])
-        .pipe(cache('move'))
-        //.pipe(changed(path.output, { extension: '.json' }))
-        .pipe(gulp.dest(path.output))
-        .pipe(browserSync.reload({stream: true}));
-});
-
-gulp.task('json', function () {
-    return gulp.src('./src/**/*.json')
-        .pipe(changed(path.output, {extension: '.json'}))
-        .pipe(gulp.dest(path.output))
-        .pipe(browserSync.reload({stream: true}));
-});
 
 gulp.task('cache-bust', function () {
     var cacheBust = "var systemLocate = System.locate; System.locate = function(load) { var System = this; return Promise.resolve(systemLocate.call(this, load)).then(function(address) { if(address.indexOf('bust') > -1 || address.indexOf('css') > -1 || address.indexOf('json') > -1) return address; return address + System.cacheBust; }); } System.cacheBust = '?bust=' + " + Math.round(new Date() / 1000) + ";";
     return gulp.src('app/app.js')
         .pipe(insert.prepend(cacheBust))
         .pipe(gulp.dest(path.output));
-});
-
-gulp.task('less-themes', function () {
-    return gulp.src(path.themes)
-        .pipe(cache('less-themes'))
-        .pipe(plumber())
-        .pipe(changed(path.output, {extension: '.css'}))
-        .pipe(sourcemaps.init())
-        .pipe(less({
-            plugins: [cleancss]
-        }))
-        .pipe(sourcemaps.write("."))
-        .pipe(gulp.dest(path.themesOutput))
-        .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('es6', function () {
@@ -148,11 +86,11 @@ gulp.task('es6', function () {
         .pipe(plumber())
         .pipe(changed(path.output, {extension: '.js'}))
         .pipe(sourcemaps.init())
-        .pipe(babel(compilerOptions))
         .pipe(ngAnnotate({
             sourceMap: true,
             gulpWarnings: false
         }))
+        .pipe(babel(compilerOptions))
         .pipe(sourcemaps.write("."))
         .pipe(gulp.dest(path.output))
         .pipe(browserSync.reload({stream: true}));
@@ -160,8 +98,8 @@ gulp.task('es6', function () {
 
 gulp.task('inline-systemjs', function () {
     return gulp.src([
-        './jspm_packages/es6-module-loader.js',
-        './jspm_packages/system.js',
+        './node_modules/es6-module-loader/dist/es6-module-loader.js',
+        './node_modules/systemjs/dist/system.js',
         './system.config.js',
         'dist/app/app.js'
     ])
@@ -172,7 +110,7 @@ gulp.task('inline-systemjs', function () {
 
 gulp.task('compile', function (callback) {
     return runSequence(
-        [/*'less', 'less-themes',*/ 'html', 'es6', 'move'],
+        ['html', 'es6'],
         callback
     );
 });
@@ -229,17 +167,11 @@ gulp.task('watch', ['serve'], function () {
 });
 
 gulp.task('build', ['compile-production'], function () {
-    var routes = require('./src/app/routes.json');
-    // get the source paths of our routes
-    routes = routes.map(function (r) {
-        return r.src;
-    });
 
     var config = {
         dest: 'dist',
         main: 'app/app.js',
         destMain: 'dist/app',
-        routes: routes,
         bundleThreshold: 0.6,
         systemConfig: './system.config.js',
         sourceMaps: false,
@@ -247,10 +179,9 @@ gulp.task('build', ['compile-production'], function () {
         mangle: true,
         verboseOutput: true,
         ignoredPaths: [
-            'jspm_packages',
             'bower_components',
-            'npm:',
-            'github:'
+            'node_modules',
+            'npm/'
         ]
     };
 

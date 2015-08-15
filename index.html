@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-framework="angularjs">
+<html lang="en">
 <head>
     <meta charset=" utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -8,20 +8,20 @@
     <meta name="viewport" content="width = device-width, minimal-ui, initial-scale = 1, user-scalable = no"/>
     <meta name="apple-mobile-web-app-title" content="Demo App">
     <title>Demo App</title>
-    <base href="/">
 </head>
-<body ng-cloak>
+<body>
+  <header>
+    <h1>Demo App</h1>
+  </header>
+  <div ui-view="content"></div>
 
-<div ui-view="content"></div>
+  <script src="node_modules/systemjs/dist/system.js"></script>
+  <script src="system.config.js"></script>
+  <script src="dist/app/app.js"></script>
 
-<script src="jspm_packages/system.js"></script>
-<script src="system.config.js"></script>
-
-<script src="dist/app/app.js"></script>
-
-<script>
-    System.import('app/app');
-</script>
+  <script>
+      System.import('app/app');
+  </script>
 
 
 </body>

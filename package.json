@@ -9,11 +9,9 @@
     "gulp-babel": "^5.1.0",
     "gulp-changed": "^1.1.0",
     "gulp-concat": "^2.5.2",
-    "gulp-css-url-adjuster": "^0.2.3",
     "gulp-insert": "^0.4.0",
     "gulp-jshint": "^1.9.0",
     "gulp-karma": "0.0.4",
-    "gulp-less": "^3.0.0",
     "gulp-minify-html": "^0.1.8",
     "gulp-ng-annotate": "^0.5.1",
     "gulp-ng-html2js": "^0.2.0",
@@ -31,36 +29,17 @@
     "karma-jspm": "^1.1.2",
     "less-plugin-clean-css": "^1.5.0",
     "ng-annotate": "^0.14.1",
-    "object.assign": "^1.1.1",
-    "rsvp": "^3.0.16",
     "run-sequence": "^1.0.2",
     "systemjs-route-bundler": "^1.3.0",
     "vinyl-paths": "^1.0.0",
     "node-v8-clone": "^0.6.2",
     "gulp-cached": "^1.0.2"
   },
-  "dependencies": {},
-  "jspm": {
-    "directories": {
-      "lib": "src"
-    },
-    "configFile": "system.config.js",
-    "dependencies": {
-      "angular": "github:angular/bower-angular@1.3.15",
-      "angular-mocks": "github:angular/bower-angular-mocks@1.3.15",
-      "angular-ui-router": "github:angular-ui/ui-router@0.2.13",
-      "css": "github:systemjs/plugin-css@^0.1.13",
-      "json": "github:systemjs/plugin-json@^0.1.0",
-      "ocombe/ocLazyLoad": "github:ocombe/ocLazyLoad@0.5.2",
-      "ui-router-extras": "npm:ui-router-extras@0.0.13"
-    },
-    "devDependencies": {
-      "babel": "npm:babel-core@^5.1.13",
-      "babel-runtime": "npm:babel-runtime@^5.1.13",
-      "core-js": "npm:core-js@^0.9.4"
-    }
-  },
-  "scripts": {
-    "postinstall": "jspm install"
+  "dependencies": {
+    "babel-core": "^5.8.22",
+    "babel-runtime": "^5.8.20",
+    "es6-module-loader": "^0.17.6",
+    "systemjs": "^0.18.10",
+    "systemjs-route-bundler": "^1.3.3"
   }
 }

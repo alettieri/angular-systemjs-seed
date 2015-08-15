@@ -1,22 +1,21 @@
-import angular from 'angular';
-import main from 'app/views/main/main.module';
-import mainContentTemplate from '../partials/main.content'
+import mainContent from '../partials/main.content';
 
-main.config(mainConfig);
-
-//@ngInject
-function mainConfig($stateProvider) {
-
+// @ngInject
+function mainConfig($stateProvider, $urlRouterProvider) {
+  'use strict';
     $stateProvider.state('main', {
         url: '/',
         views: {
             content: {
-                template: `<div>
-                hello world
-                </div>`
+                templateUrl: mainContent.name,
+                controllerAs: 'vm',
+                controller: 'MainController'
+
             }
         }
     });
+
+    $urlRouterProvider.otherwise('/');
 }
 
-export default main;
+export default mainConfig;
